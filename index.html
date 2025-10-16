@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Virtual Watch Try-On</title>
+    <!-- Add Tailwind CSS first -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- TensorFlow.js and Hand Pose Detection -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose@0.0.7/dist/handpose.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container">
+        <h1 class="text-3xl font-semibold text-gray-800 mb-4">Advanced Virtual Watch Try-On</h1>
+        
+        <div id="instructions" class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-5 leading-relaxed">
+             <h2 class="text-2xl font-semibold text-gray-700 mb-3">How to Use:</h2>
+             <ol class="list-decimal list-inside space-y-2 text-gray-600">
+                <li><strong>Select Your Hand:</strong> Choose whether you want to try the watch on your left or right hand.</li>
+                <li><strong>Upload a Watch Image:</strong> Click the "Upload Watch Image" button and select a clear image of the watch face.</li>
+                <li><strong>Enable Camera:</strong> The website will ask for permission to access your camera. Allow access for the try-on feature to work.</li>
+                <li><strong>Position Your Hand:</strong> Show your selected hand to the camera. The system will detect palm up/down automatically.</li>
+                <li><strong>Automatic Detection:</strong> The app will automatically detect your hand orientation and place the watch accordingly.</li>
+                <li><strong>Adjust Position:</strong> Move your hand naturally to see the watch from different angles.</li>
+             </ol>
+             <p class="mt-4 text-gray-600"><strong>Important Notes:</strong></p>
+             <ul class="list-disc list-inside space-y-2 text-gray-600">
+                <li>Good lighting will improve detection accuracy.</li>
+                <li>The watch will automatically resize based on your wrist size.</li>
+                <li>Background removal works best with watches on plain backgrounds.</li>
+                <li>Hand detection may take a few seconds to initialize.</li>
+                <li>Try different hand orientations (palm up/down) for best results.</li>
+             </ul>
+        </div>
+
+        <!-- Hand Selection -->
+        <div id="hand-selection" class="hand-selection">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">Select Which Hand to Try Watch On:</h3>
+            <div class="hand-buttons">
+                <button id="leftHandBtn" class="hand-button">
+                    <span class="material-icons mr-2">back_hand</span>
+                    Left Hand
+                </button>
+                <button id="rightHandBtn" class="hand-button">
+                    <span class="material-icons mr-2">front_hand</span>
+                    Right Hand
+                </button>
+            </div>
+            <p class="text-sm text-gray-500 mt-2">Choose the hand you want to wear the watch on</p>
+        </div>
+
+        <div id="status-container" class="mb-4">
+            <div class="detection-info">
+                <div>
+                    <span id="statusIndicator" class="status-indicator inactive"></span>
+                    <span id="detectionStatus" class="text-blue-600 font-medium">Please select a hand first</span>
+                </div>
+                <div id="handInfo" class="text-sm text-gray-600"></div>
+            </div>
+        </div>
+
+        <div class="video-container">
+            <video id="videoElement" class="hidden"></video>
+            <canvas id="overlayCanvas"></canvas>
+            <canvas id="watchCanvas"></canvas>
+            <div id="palmIndicator" class="palm-indicator hidden"></div>
+        </div>
+
+        <div class="controls mt-6 flex flex-col items-center">
+            <input type="file" id="imageUpload" accept="image/*" class="hidden">
+            <div class="flex flex-wrap justify-center gap-2">
+                <button id="uploadButton" class="upload-button">
+                    <i class="material-icons mr-2">watch</i> Upload Watch Image
+                </button>
+                <button id="toggleDetection" class="control-button" disabled>
+                    <i class="material-icons mr-2">play_arrow</i> Start Detection
+                </button>
+                <button id="exportImage" class="control-button">
+                    <i class="material-icons mr-2">download</i> Save Image
+                </button>
+            </div>
+            <div id="feedback" class="mt-3 text-green-600 font-semibold"></div>
+            <div id="error" class="error-message"></div>
+        </div>
+
+        <div class="watch-preview mt-4 flex justify-center">
+            <img id="watchImage" src="#" alt="Watch Preview" class="hidden max-w-sm rounded-lg shadow-sm">
+        </div>
+    </div>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
